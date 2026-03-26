@@ -1,19 +1,19 @@
 const router = require("express").Router();
+const auth = require("../middleware/authMiddleware");
 const multer = require("multer");
 const fs = require("fs");
 const csv = require("csv-parser");
-
-// ⚠ remove mongoose model if postgres use karo
-// const Report = require("../models/Report");
+const pool = require("../config/db");
 
 const upload = multer({ dest: "uploads/" });
 
 /* ===============================
    UPLOAD CSV + SAVE DATA
 ================================ */
-router.post("/upload", upload.single("file"), async (req, res) => {
+router.post("/upload", auth, upload.single("file"), async (req, res) => {
 
   try {
+    const userId = req.user.id;
 
     if (!req.file)
       return res.status(400).json({ error: "File not uploaded" });
@@ -21,6 +21,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     if (!req.body.clientId)
       return res.status(400).json({ error: "ClientId missing" });
 
+    const clientId = req.body.clientId;
     const results = [];
 
     fs.createReadStream(req.file.path)
@@ -31,15 +32,23 @@ router.post("/upload", upload.single("file"), async (req, res) => {
         if (results.length === 0)
           return res.status(400).json({ error: "CSV empty" });
 
-        /* ===============================
-           👉 POSTGRES INSERT HERE
-           (example dummy response now)
-        =============================== */
-
-        // TODO: insert into postgres using pool.query()
+        // ✅ INSERT EACH ROW
+        for (let row of results) {
+          await pool.query(
+            `INSERT INTO reports (client_id, user_id, spend, clicks, conversions)
+             VALUES ($1, $2, $3, $4, $5)`,
+            [
+              clientId,
+              userId,
+              row.spend || 0,
+              row.clicks || 0,
+              row.conversions || 0
+            ]
+          );
+        }
 
         res.json({
-          msg: "Uploaded & Parsed",
+          msg: "Uploaded & Saved ✅",
           rows: results.length
         });
       });
@@ -47,28 +56,6 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Upload failed" });
-  }
-
-});
-
-
-/* ===============================
-   DASHBOARD API (VERY IMPORTANT)
-================================ */
-router.get("/dashboard", async (req, res) => {
-
-  try {
-
-    // 👉 temporary dummy data (test first)
-    res.json({
-      clients: 5,
-      spend: 25000,
-      clicks: 4300,
-      conversions: 180
-    });
-
-  } catch (err) {
-    res.status(500).json({ error: "Dashboard error" });
   }
 
 });

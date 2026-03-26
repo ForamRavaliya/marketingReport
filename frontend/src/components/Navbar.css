@@ -46,3 +46,16 @@
     flex-wrap:wrap;
   }
 }
+.logout-btn {
+  margin-left: 15px;
+  padding: 6px 12px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: darkred;
+}

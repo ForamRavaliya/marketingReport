@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const auth = require("../middleware/authMiddleware");
 
 const {
   createClient,
@@ -6,8 +7,9 @@ const {
   deleteClient
 } = require("../controllers/clientController");
 
-router.post("/", createClient);
-router.get("/", getClients);
-router.delete("/:id", deleteClient);
+// 🔐 PROTECTED ROUTES
+router.post("/", auth, createClient);
+router.get("/", auth, getClients);
+router.delete("/:id", auth, deleteClient);
 
 module.exports = router;

@@ -2,7 +2,12 @@ const pool = require("../config/db");
 
 exports.getDashboard = async (req, res) => {
   try {
-    const clients = await pool.query("SELECT COUNT(*) FROM clients");
+    const userId = req.user.id;
+
+    const clients = await pool.query(
+      "SELECT COUNT(*) FROM clients WHERE user_id = $1",
+      [userId]
+    );
 
     const totals = await pool.query(`
       SELECT
@@ -10,7 +15,8 @@ exports.getDashboard = async (req, res) => {
         COALESCE(SUM(clicks),0) AS clicks,
         COALESCE(SUM(conversions),0) AS conversions
       FROM reports
-    `);
+      WHERE user_id = $1
+    `, [userId]);
 
     res.json({
       clients: Number(clients.rows[0].count),

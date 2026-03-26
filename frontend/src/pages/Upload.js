@@ -26,12 +26,15 @@ export default function Upload(){
     try{
       setLoading(true);
 
+      const token = localStorage.getItem("token");
+
       await axios.post(
         "http://localhost:5000/api/reports/upload",
         form,
         {
           headers: {
-            "Content-Type": "multipart/form-data"
+            "Content-Type": "multipart/form-data",
+            Authorization: token
           }
         }
       );
