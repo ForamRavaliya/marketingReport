@@ -3,56 +3,45 @@ import {
   PieChart, Pie, BarChart, Bar, Cell
 } from "recharts";
 
-export default function ChartComponent() {
+export default function ChartComponent({ data, campaign }) {
 
-  const data = [
-    { name: "Mon", clicks: 30 },
-    { name: "Tue", clicks: 50 },
-    { name: "Wed", clicks: 40 },
-    { name: "Thu", clicks: 70 },
-    { name: "Fri", clicks: 60 }
+  const chartData = [
+    { name: "Mon", clicks: data.clicks * 0.2 },
+    { name: "Tue", clicks: data.clicks * 0.3 },
+    { name: "Wed", clicks: data.clicks * 0.25 },
+    { name: "Thu", clicks: data.clicks * 0.15 },
+    { name: "Fri", clicks: data.clicks * 0.1 }
   ];
 
   const pieData = [
-    { name: "Meta", value: 300 },
-    { name: "Google", value: 200 }
+    { name: "Meta", value: campaign === "Meta Ads" ? data.clicks : 300 },
+    { name: "Google", value: campaign === "Google Ads" ? data.clicks : 200 }
   ];
 
   const COLORS = ["#0088FE", "#00C49F"];
 
   return (
-    <div style={{
-      display: "flex",
-      gap: 30,
-      flexWrap: "wrap",
-      alignItems: "center"
-    }}>
+    <div style={{ display: "flex", gap: 30, flexWrap: "wrap" }}>
 
-      {/* 📈 LINE CHART */}
-      <LineChart width={400} height={250} data={data}>
+      {/* LINE */}
+      <LineChart width={400} height={250} data={chartData}>
         <XAxis dataKey="name" />
         <YAxis />
         <Tooltip />
         <Line type="monotone" dataKey="clicks" stroke="#8884d8" />
       </LineChart>
 
-      {/* 🥧 PIE CHART */}
+      {/* PIE */}
       <PieChart width={250} height={250}>
-        <Pie
-          data={pieData}
-          dataKey="value"
-          cx="50%"
-          cy="50%"
-          outerRadius={80}
-        >
+        <Pie data={pieData} dataKey="value" outerRadius={80}>
           {pieData.map((entry, index) => (
             <Cell key={index} fill={COLORS[index]} />
           ))}
         </Pie>
       </PieChart>
 
-      {/* 📊 BAR CHART */}
-      <BarChart width={300} height={200} data={data}>
+      {/* BAR */}
+      <BarChart width={300} height={200} data={chartData}>
         <XAxis dataKey="name" />
         <YAxis />
         <Tooltip />

@@ -15,6 +15,7 @@ export default function Login() {
       );
 
      localStorage.setItem("token", res.data.token);
+     localStorage.setItem("role", res.data.role); // 🔥 ADD THIS
 
      navigate("/dashboard");   // 🔥 redirect
 

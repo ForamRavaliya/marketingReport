@@ -6,13 +6,15 @@ export default function Clients() {
   const [list, setList] = useState([]);
 
   const token = localStorage.getItem("token");
-
+console.log("TOKEN:", token);
+console.log("HEADER:", `Bearer ${token}`);
   // ✅ LOAD CLIENTS (USER-WISE)
   const load = () =>
     axios.get("http://localhost:5000/api/clients", {
-      headers: { Authorization: token }
+      headers: { Authorization: `Bearer ${token}` } // ✅ FIXED
     })
-    .then((r) => setList(r.data));
+    .then((r) => setList(r.data))
+    .catch((err) => console.log("ERROR:", err)); // optional debug
 
   useEffect(() => {
     if (token) load();
