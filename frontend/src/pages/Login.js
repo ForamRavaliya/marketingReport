@@ -10,16 +10,17 @@ export default function Login() {
   const login = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "http://localhost:5000/api/auth/client-login",
         { email, password }
       );
 
-     localStorage.setItem("token", res.data.token);
-     localStorage.setItem("role", res.data.role); // 🔥 ADD THIS
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.role);
 
-     navigate("/dashboard");   // 🔥 redirect
+      alert("Login success ✅");
+      navigate("/dashboard");
 
-    } catch {
+    } catch (err) {
       alert("Invalid login ❌");
     }
   };

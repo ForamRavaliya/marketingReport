@@ -115,12 +115,14 @@ export default function Dashboard() {
         />
 
         {/* CLIENT */}
+        {role === "admin" && (
         <select onChange={(e) => setFilteredClient(e.target.value)}>
           <option value="All">All Clients</option>
           {clients.map(c => (
             <option key={c._id} value={c._id}>{c.name}</option>
           ))}
         </select>
+        )}
 
         {/* CAMPAIGN */}
         <select onChange={(e) => setCampaign(e.target.value)}>

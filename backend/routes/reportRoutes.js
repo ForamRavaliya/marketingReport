@@ -4,6 +4,7 @@ const multer = require("multer");
 const fs = require("fs");
 const csv = require("csv-parser");
 const pool = require("../config/db");
+const { uploadReport } = require("../controllers/reportController");
 
 const upload = multer({ dest: "uploads/" });
 

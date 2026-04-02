@@ -10,16 +10,17 @@ export default function Register() {
  const register = async () => {
    try {
      await axios.post(
-       "http://localhost:5000/api/auth/register",
-       { email, password }
+       "http://localhost:5000/api/auth/client-register",
+       { name: "XYZ",email, password }
      );
 
      alert("Registered successfully ✅");
      navigate("/");
 
-   } catch {
-     alert("User already exists ❌");
-   }
+   } catch(err) {
+     console.log(err);
+         alert(err.response?.data?.msg || "Register failed ❌");
+       }
  };
 
   return (

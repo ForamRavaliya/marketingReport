@@ -3,35 +3,42 @@ import {
   PieChart, Pie, BarChart, Bar, Cell
 } from "recharts";
 
-export default function ChartComponent({ data, campaign }) {
+export default function ChartComponent({ data = [] }) {
 
-  const chartData = [
-    { name: "Mon", clicks: data.clicks * 0.2 },
-    { name: "Tue", clicks: data.clicks * 0.3 },
-    { name: "Wed", clicks: data.clicks * 0.25 },
-    { name: "Thu", clicks: data.clicks * 0.15 },
-    { name: "Fri", clicks: data.clicks * 0.1 }
-  ];
+  // ✅ FORMAT DATA FROM BACKEND
+  const formatted = data.map(d => ({
+    name: new Date(d.date).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short"
+    }),
+    clicks: Number(d.clicks)
+  }));
 
+  // ✅ PIE (dummy split)
   const pieData = [
-    { name: "Meta", value: campaign === "Meta Ads" ? data.clicks : 300 },
-    { name: "Google", value: campaign === "Google Ads" ? data.clicks : 200 }
+    { name: "Meta", value: 60 },
+    { name: "Google", value: 40 }
   ];
 
   const COLORS = ["#0088FE", "#00C49F"];
 
   return (
-    <div style={{ display: "flex", gap: 30, flexWrap: "wrap" }}>
+    <div style={{
+      display: "flex",
+      gap: 30,
+      flexWrap: "wrap",
+      alignItems: "center"
+    }}>
 
-      {/* LINE */}
-      <LineChart width={400} height={250} data={chartData}>
+      {/* 📈 LINE */}
+      <LineChart width={400} height={250} data={formatted}>
         <XAxis dataKey="name" />
         <YAxis />
         <Tooltip />
         <Line type="monotone" dataKey="clicks" stroke="#8884d8" />
       </LineChart>
 
-      {/* PIE */}
+      {/* 🥧 PIE */}
       <PieChart width={250} height={250}>
         <Pie data={pieData} dataKey="value" outerRadius={80}>
           {pieData.map((entry, index) => (
@@ -40,8 +47,8 @@ export default function ChartComponent({ data, campaign }) {
         </Pie>
       </PieChart>
 
-      {/* BAR */}
-      <BarChart width={300} height={200} data={chartData}>
+      {/* 📊 BAR */}
+      <BarChart width={300} height={200} data={formatted}>
         <XAxis dataKey="name" />
         <YAxis />
         <Tooltip />
